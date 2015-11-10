@@ -99,3 +99,12 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed){
         }
     });
 }
+
+function handleMessageBroadCasting(socket){
+    socket.on('message', function(message){
+        socket.broadcast.to(message.room).emit('message', {
+            text: nickNames[socket.id] + ': ' + message.text
+            // broadcast message event to all the acceptors
+        });
+    });
+}
