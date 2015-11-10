@@ -108,3 +108,18 @@ function handleMessageBroadCasting(socket){
         });
     });
 }
+
+function handleRoomJoining(socket){
+    socket.on('join', function(room){
+        socket.leave(currentRoom[socket.id]);
+        joinRoom(socket, room.newRoom);
+    })
+}
+
+function handleClientDisconnection(socket){
+    socket.on('disconnect', function(){
+        var nameIndex = namesUsed.indexOf(nickNames[socket.id]);
+        delete namesUsed[nameIndex];
+        delete nickNames[socket.id];
+    });
+}
