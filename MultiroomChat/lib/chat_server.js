@@ -1,4 +1,4 @@
-var socketio = require('socket.io');
+var io = require('socket.io');
 
 var io;
 var guestNumber = 1;
@@ -7,10 +7,12 @@ var namesUsed = [];
 var currentRoom = {};
 
 exports.listen = function(server){
-    io = socketio.listen(server);
-    io.set('log level', 1);
+    console.log("Starting...");
+    io = io.listen(server);
+    // io.set('log level', 1);
 
     io.sockets.on('connection', function(socket){ //Define how each user connection will be handled
+        console.log("We have connection!");
         guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
         joinRoom(socket, 'Lobby');
 
@@ -18,12 +20,11 @@ exports.listen = function(server){
         handleNameChangeAttempts(socket, nickNames, namesUsed);
         handleRoomJoining(socket);
 
-        socket.on('rooms', function(){ //Provide user with list of occupied 
-            rooms on request
+        socket.on('rooms', function(){ 
+        //Provide user with the list of occupied  rooms on request
+            console.log("DEBUG: Room list requested.");
             socket.emit('rooms', io.sockets.manager.rooms);
-            socket.broadcast.to(room).emit('message', {
-                text: nickNames[socket.id] + ' has joined ' + room + '.'
-            });
+
 
             var usersInRoom = io.sockets.clients(room);
         });
@@ -47,14 +48,14 @@ function joinRoom(socket, room){
     socket.emit('joinResult', {room: room});
 
     socket.broadcast.to(room).emit('message', {
-        text: nickNames[socket.id] + ' has joined ' + room + ',';
+        text: nickNames[socket.id] + ' has joined ' + room + ',',
     });
 
     var usersInRoom = io.sockets.clients(room);
     if (usersInRoom.length > 1) {
         var usersInRoomSummary = 'Users currently in ' + room + ': ';
         for (var index in usersInRoom){
-            var userSocketId - usersInRoom[index].id;
+            var userSocketId = usersInRoom[index].id;
             if (userSocketId != socket.id){
                 if (index > 0){
                     usersInRoomSummary += ', ';
@@ -69,6 +70,7 @@ function joinRoom(socket, room){
 
 function handleNameChangeAttempts(socket, nickNames, namesUsed){
     socket.on('nameAttempt', function(name){
+        console.log("DEBUG: Request to change name to " + name);
         if (name.indexOf('Guest')==0){
             socket.emit('nameResult', {
                 success: false,
@@ -102,6 +104,7 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed){
 
 function handleMessageBroadCasting(socket){
     socket.on('message', function(message){
+        console.log("DEBUG: Broadcasting " + message.text + " to chat.");
         socket.broadcast.to(message.room).emit('message', {
             text: nickNames[socket.id] + ': ' + message.text
             // broadcast message event to all the acceptors

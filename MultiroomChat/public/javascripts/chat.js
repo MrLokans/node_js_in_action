@@ -21,7 +21,7 @@ Chat.prototype.processCommand = function(command){
     // Assuming '/<command> <arg> syntax'
     var command = words[0]
                     .substring(1, words[0].length)
-                    .toLowercase();
+                    .toLowerCase();
     var message = false;
 
     switch(command){
@@ -33,6 +33,7 @@ Chat.prototype.processCommand = function(command){
         case 'nick':
             words.shift();
             var name = words.join();
+            console.log("Emmiting name change on " + name);
             this.socket.emit('nameAttempt', name);
             break;
         default:
