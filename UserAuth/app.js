@@ -2,8 +2,21 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Stategy;
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var flash = require('connect-flash');
+var messages = require('express-messages');
+
+// DB routines
+var mongo = require('mongodb');
+var mongoose = require('mongoose');
+var db = mongoose.connection;
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -14,13 +27,53 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Handle file uploading
+app.use(multer({dest:'./uploads'}).single('photo'));
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// session middleware
+app.use(session({
+  secret: 'HAS_TO_BE_SECRET',
+  saveUninitialized: true,
+  resave: true
+}));
+
+// set up passport, note: only AFTER session setup
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Validation
+app.use(expressValidator({
+  errorFormator: function(param, msg, value){
+    var namespace = param.split('.');
+    var root = namespace.shift();
+    var formParam = root;
+
+    while(namespace.length){
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param: formParam,
+      msg: msg,
+      value: value
+    };
+  }
+}));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(flash());
+app.use(function (req, res, next) {
+  res.locals.messages = messages(req, res);
+  next();
+});
+
 
 app.use('/', routes);
 app.use('/users', users);
