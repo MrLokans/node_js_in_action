@@ -76,7 +76,7 @@ router.post('/register', function(req, res, next) {
 
         });
 
-        req.flash('succsess', 'You are now registered.');
+        req.flash('success', 'You are now registered.');
         res.location('/');
         res.redirect('/');
     }
