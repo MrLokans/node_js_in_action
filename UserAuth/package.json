@@ -15,17 +15,13 @@
     "serve-favicon": "~2.2.1",
     "mongodb": "*",
     "mongoose": "*",
-    // flash messages
     "connect-flash": "*",
-    // form validation
     "express-validator": "*",
     "express-session": "*",
     "express-messages": "*",
     "passport": "*",
-    // local auth
     "passport-local": "*",
     "passport-http": "*",
-    // file uploading
     "multer": "*"
   }
 }
