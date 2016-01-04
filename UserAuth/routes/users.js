@@ -19,8 +19,12 @@ router.post('/register', function(req, res, next) {
     var password = req.body.password; 
     var password2 = req.body.password2;
 
-    profImage = req.files.profileimage;
-    if (profImage){
+    console.log(req.file);
+    console.log(req.files);
+
+
+    if (req.file && req.file.profileimage){
+        profImage = req.file.profileimage;
         console.log('Uploading file...');
 
         var profileImageOrigName = profImage.originalname;
@@ -43,7 +47,7 @@ router.post('/register', function(req, res, next) {
     req.checkBody('password2', 'Passwords should match.').equals(password);
 
     // Check error statuses
-    var errors = req.validateErrors();
+    var errors = req.validationErrors();
 
     if (errors){
         res.render('register', {

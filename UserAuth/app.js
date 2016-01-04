@@ -28,7 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // Handle file uploading
-app.use(multer({dest:'./uploads'}).single('photo'));
+app.use(multer({dest:'./uploads'}).single('profileimage'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
