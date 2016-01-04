@@ -1,0 +1,9 @@
+> mongo
+use nodeauth
+db.createCollection('users');
+show collections
+
+db.users.insert({name:"John Doe", email:"test@test.test", username:"john_doe", password:"32qr122ee12wqfsgwer21e12eqf"});
+db.users.find(); // Get all documents in collection
+
+
