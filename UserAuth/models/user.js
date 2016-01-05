@@ -29,6 +29,24 @@ var UserSchema = mongoose.Schema({
 
 var User = module.exports = mongoose.model('User', UserSchema);
 
+module.exports.comparePassword = function(givenPassword, hash, cb){
+    bcrypt.compare(givenPassword, hash, function(err, isCorrect){
+        if (err) return cb(err);
+        cb(null, isCorrect);
+    });
+};
+
+module.exports.getByUsername = function(username, cb){
+    var query = {username: username};
+    User.findOne(query, cb);
+};
+
+module.exports.getById = function(userId, cb){
+    User.findById(userId, cb);
+};
+
+
+
 module.exports.createUser = function(newUser, cb){
     // TODO: 10 is a bad salt
     console.log("Entering createUser");
