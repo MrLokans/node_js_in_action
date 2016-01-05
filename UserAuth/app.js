@@ -74,6 +74,11 @@ app.use(function (req, res, next) {
   next();
 });
 
+// make user accessible by all of the requests
+app.get('*', function(req, res){
+    res.locals.user = req.user || null;
+    next();
+});
 
 app.use('/', routes);
 app.use('/users', users);
