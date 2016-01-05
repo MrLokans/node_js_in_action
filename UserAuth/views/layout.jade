@@ -26,6 +26,7 @@ html
                         li
                             a(href='/users/logout') Logout
         .container
+            != messages()
             block content
     script(src='/javascripts/jquery.min.js')    
     script(src='/javascripts/bootstrap.min.js')
