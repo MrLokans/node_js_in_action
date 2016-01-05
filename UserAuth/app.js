@@ -75,7 +75,7 @@ app.use(function (req, res, next) {
 });
 
 // make user accessible by all of the requests
-app.get('*', function(req, res){
+app.get('*', function(req, res, next){
     res.locals.user = req.user || null;
     next();
 });
